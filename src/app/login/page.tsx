@@ -63,55 +63,25 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0" style={{
-        background: 'linear-gradient(135deg, #153275 0%, #D10D38 30%, #0374EF 60%, #886DE8 80%, #EF7037 100%)'
-      }}>
-        {/* Floating geometric shapes */}
-        <div className="absolute top-20 left-20 w-32 h-32 rounded-full opacity-20 animate-pulse" style={{
-          background: 'linear-gradient(45deg, #F7C959, #EF7037)'
-        }}></div>
-        <div className="absolute bottom-20 right-20 w-24 h-24 rounded-lg opacity-20 animate-bounce" style={{
-          background: 'linear-gradient(45deg, #886DE8, #0374EF)',
-          animationDelay: '2s'
-        }}></div>
-        <div className="absolute top-1/2 left-10 w-16 h-16 rounded-full opacity-30 animate-ping" style={{
-          background: 'linear-gradient(45deg, #D10D38, #153275)',
-          animationDelay: '1s'
-        }}></div>
-        <div className="absolute bottom-1/3 right-1/4 w-20 h-20 rounded-lg opacity-25 animate-pulse" style={{
-          background: 'linear-gradient(45deg, #0374EF, #886DE8)',
-          animationDelay: '3s'
-        }}></div>
-      </div>
-      
-      {/* Glass Card */}
-      <Card className="w-full max-w-md shadow-2xl border-0 relative z-10" style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)'
-      }}>
-        <CardHeader className="text-center pb-8">
-          <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
-              background: 'linear-gradient(45deg, #D10D38, #153275)',
-              boxShadow: '0 8px 32px rgba(209, 13, 56, 0.3)'
-            }}>
-              <span className="text-3xl font-bold text-white">B&B</span>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <Card className="w-full max-w-md shadow-lg border border-gray-200 bg-white">
+        <CardHeader className="text-center pb-6">
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 rounded-lg flex items-center justify-center bg-[#D10D38] shadow-lg">
+              <span className="text-2xl font-bold text-white">B&B</span>
             </div>
           </div>
-          <CardTitle className="font-heading text-4xl font-bold mb-2 text-white drop-shadow-lg">
+          <CardTitle className="text-2xl font-bold mb-2 text-gray-900">
             B&B Inventory
           </CardTitle>
-          <CardDescription className="text-white/90 text-lg font-medium">
-            {isSignUp ? "Create your account" : "Welcome back! Sign in to continue"}
+          <CardDescription className="text-gray-600">
+            {isSignUp ? "Create your account" : "Sign in to your account"}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-white font-semibold text-sm">Email Address</Label>
+              <Label htmlFor="email" className="text-gray-700">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -119,18 +89,13 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
-                className="h-12 text-lg transition-all duration-200 focus:scale-105"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  backdropFilter: 'blur(10px)'
-                }}
+                className="h-10"
                 placeholder="Enter your email"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white font-semibold text-sm">Password</Label>
+              <Label htmlFor="password" className="text-gray-700">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -138,50 +103,26 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                className="h-12 text-lg transition-all duration-200 focus:scale-105"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  backdropFilter: 'blur(10px)'
-                }}
+                className="h-10"
                 placeholder="Enter your password"
               />
             </div>
 
-            <div className="space-y-4 pt-2">
+            <div className="space-y-3 pt-2">
               <Button 
                 type="submit" 
-                className="w-full text-white font-bold py-4 text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl transform active:scale-95"
+                className="w-full bg-[#D10D38] hover:bg-[#B8082F] text-white font-medium"
                 disabled={isLoading}
-                style={{
-                  background: 'linear-gradient(45deg, #D10D38 0%, #153275 100%)',
-                  border: 'none',
-                  boxShadow: '0 8px 32px rgba(209, 13, 56, 0.4)',
-                  borderRadius: '12px'
-                }}
               >
-                {isLoading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Loading...
-                  </div>
-                ) : (
-                  isSignUp ? "Create Account" : "Sign In"
-                )}
+                {isLoading ? "Loading..." : (isSignUp ? "Sign Up" : "Sign In")}
               </Button>
               
               <Button
                 type="button"
-                variant="ghost"
-                className="w-full py-4 font-semibold transition-all duration-300 hover:scale-105 text-white hover:text-white transform active:scale-95"
+                variant="outline"
+                className="w-full border-[#0374EF] text-[#0374EF] hover:bg-[#0374EF] hover:text-white"
                 onClick={() => setIsSignUp(!isSignUp)}
                 disabled={isLoading}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  backdropFilter: 'blur(10px)',
-                  borderRadius: '12px'
-                }}
               >
                 {isSignUp ? "Already have an account? Sign In" : "Need an account? Sign Up"}
               </Button>
