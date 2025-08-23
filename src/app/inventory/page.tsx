@@ -203,7 +203,7 @@ export default function InventoryPage() {
     isEdit?: boolean; 
   }) => (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] bg-white border border-gray-200 shadow-xl">
         <DialogHeader>
           <DialogTitle className="font-heading">
             {isEdit ? "Edit Product" : "Add New Product"}
@@ -345,14 +345,17 @@ export default function InventoryPage() {
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleEditProduct(product)}>
+                          <DropdownMenuContent align="end" className="bg-white border border-gray-200 shadow-lg">
+                            <DropdownMenuItem 
+                              onClick={() => handleEditProduct(product)}
+                              className="hover:bg-gray-100 cursor-pointer"
+                            >
                               <Edit className="mr-2 h-4 w-4" />
                               Edit
                             </DropdownMenuItem>
                             <DropdownMenuItem 
                               onClick={() => handleDeleteProduct(product)}
-                              className="text-destructive"
+                              className="text-destructive hover:bg-red-50 cursor-pointer"
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
                               Delete
@@ -383,7 +386,7 @@ export default function InventoryPage() {
 
         {/* Delete Confirmation Dialog */}
         <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <AlertDialogContent>
+          <AlertDialogContent className="bg-white border border-gray-200 shadow-xl">
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
