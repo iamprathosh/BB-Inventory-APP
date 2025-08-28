@@ -10,11 +10,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        border: "var(--color-border)",
+        input: "var(--color-input)",
+        ring: "var(--color-ring)",
+        background: "var(--color-background)",
+        foreground: "var(--color-foreground)",
         primary: {
           DEFAULT: "#D10D38", // B&B Red - Direct hex
           foreground: "#FFFFFF",
@@ -24,24 +24,24 @@ const config: Config = {
           foreground: "#FFFFFF",
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "var(--color-destructive)",
+          foreground: "var(--color-destructive-foreground)",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "var(--color-muted)",
+          foreground: "var(--color-muted-foreground)",
         },
         accent: {
           DEFAULT: "#0374EF", // B&B Light Blue - Direct hex
           foreground: "#FFFFFF",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "var(--color-popover)",
+          foreground: "var(--color-popover-foreground)",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "var(--color-card)",
+          foreground: "var(--color-card-foreground)",
         },
         chart: {
           "1": "#D10D38", // B&B Red
@@ -51,14 +51,14 @@ const config: Config = {
           "5": "#EF7037", // B&B Orange
         },
         sidebar: {
-          DEFAULT: "#153275", // B&B Blue
-          foreground: "#FFFFFF",
-          primary: "#D10D38", // B&B Red
-          "primary-foreground": "#FFFFFF",
-          accent: "#1e4385", // Slightly lighter blue
-          "accent-foreground": "#FFFFFF",
-          border: "#2a4f7c",
-          ring: "#D10D38",
+          DEFAULT: "var(--color-sidebar)",
+          foreground: "var(--color-sidebar-foreground)",
+          primary: "var(--color-sidebar-primary)",
+          "primary-foreground": "var(--color-sidebar-primary-foreground)",
+          accent: "var(--color-sidebar-accent)",
+          "accent-foreground": "var(--color-sidebar-accent-foreground)",
+          border: "var(--color-sidebar-border)",
+          ring: "var(--color-sidebar-ring)",
         },
       },
       borderRadius: {

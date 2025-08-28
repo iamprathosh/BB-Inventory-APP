@@ -117,8 +117,8 @@ export function LoggedInLayout({ children, title = "Dashboard" }: LoggedInLayout
   return (
     <div className="min-h-screen bg-background transition-colors duration-300">
       {/* Sidebar */}
-      <div className="fixed inset-y-0 left-0 w-64 bg-secondary dark:bg-slate-900 shadow-2xl border-r border-border transition-colors duration-300">
-        <div className="flex h-20 items-center justify-center border-b border-white/10 dark:border-slate-700 px-4">
+      <div className="fixed inset-y-0 left-0 w-64 bg-sidebar shadow-2xl border-r border-sidebar-border transition-colors duration-300">
+        <div className="flex h-20 items-center justify-center border-b border-sidebar-border px-4">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-lg">
               <span className="text-white font-bold text-lg">B</span>
@@ -128,10 +128,10 @@ export function LoggedInLayout({ children, title = "Dashboard" }: LoggedInLayout
             </div>
           </div>
           <div className="ml-3">
-            <h1 className="font-heading text-lg font-bold text-secondary-foreground leading-tight">
+            <h1 className="font-heading text-lg font-bold text-sidebar-foreground leading-tight">
               <span className="text-primary">Build</span><span className="text-accent">Buddy</span>
             </h1>
-            <p className="text-xs text-secondary-foreground/70">Inventory System</p>
+            <p className="text-xs text-sidebar-foreground/70">Inventory System</p>
           </div>
         </div>
         
@@ -141,11 +141,7 @@ export function LoggedInLayout({ children, title = "Dashboard" }: LoggedInLayout
               <Link
                 key={item.name}
                 href={item.href}
-                className="flex items-center space-x-3 rounded-lg px-4 py-3 text-secondary-foreground font-medium hover:bg-white/20 dark:hover:bg-slate-700/50 transition-all duration-200 group border border-transparent hover:border-white/30 dark:hover:border-slate-600 hover:text-white"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(10px)'
-                }}
+                className="flex items-center space-x-3 rounded-lg px-4 py-3 text-sidebar-foreground font-medium hover:bg-sidebar-accent transition-all duration-200 group border border-transparent hover:border-sidebar-border hover:text-sidebar-accent-foreground"
               >
                 <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />
                 <span className="group-hover:translate-x-1 transition-transform duration-200">{item.name}</span>

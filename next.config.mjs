@@ -1,15 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Disable webpack cache to prevent permission issues
-  webpack: (config) => {
-    config.cache = false;
-    return config;
-  },
   eslint: {
     ignoreDuringBuilds: true,
   },
   images: {
     domains: ['localhost'],
+  },
+  // Turbopack configuration (for future use)
+  experimental: {
+    // Future Turbopack settings can go here
   },
 };
 
