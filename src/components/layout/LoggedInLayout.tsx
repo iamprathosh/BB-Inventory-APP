@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useConvexAuth } from "@/contexts/AuthContext";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { 
   LayoutDashboard, 
   Package, 
@@ -34,6 +36,7 @@ interface LoggedInLayoutProps {
 export function LoggedInLayout({ children, title = "Dashboard" }: LoggedInLayoutProps) {
   const { isAuthenticated, isLoading, logout } = useConvexAuth();
   const router = useRouter();
+  const currentUser = useQuery(api.users.current);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -60,7 +63,8 @@ export function LoggedInLayout({ children, title = "Dashboard" }: LoggedInLayout
     router.push("/login");
   };
 
-  const navigationItems = [
+  // Base navigation items
+  const baseNavigationItems = [
     {
       name: "Dashboard",
       href: "/",
@@ -94,6 +98,21 @@ export function LoggedInLayout({ children, title = "Dashboard" }: LoggedInLayout
       icon: FileText,
     },
   ];
+
+  // Admin-only navigation items
+  const adminNavigationItems = [
+    {
+      name: "Admin Setup",
+      href: "/admin-setup",
+      icon: Settings,
+      description: "Manage users, roles & system settings"
+    },
+  ];
+
+  // Combine navigation items based on user role
+  const navigationItems = currentUser?.role === 'admin' 
+    ? [...baseNavigationItems, ...adminNavigationItems]
+    : baseNavigationItems;
 
   return (
     <div className="min-h-screen bg-background transition-colors duration-300">
@@ -153,6 +172,12 @@ export function LoggedInLayout({ children, title = "Dashboard" }: LoggedInLayout
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                {currentUser?.role === 'admin' && (
+                  <DropdownMenuItem onClick={() => router.push('/admin-setup')} className="cursor-pointer">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Admin Setup
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   Log Out

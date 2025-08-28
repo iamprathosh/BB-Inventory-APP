@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { LoggedInLayout } from "@/components/layout/LoggedInLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -146,32 +147,42 @@ export default function AdminSetupPage() {
 
   if (!canSetupAdmin) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-red-100 p-4 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <CardTitle className="text-red-700">Access Denied</CardTitle>
-            <CardDescription>
-              Only administrators can access this page.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
+      <LoggedInLayout title="Admin Setup">
+        <div className="min-h-[70vh] flex items-center justify-center">
+          <Card className="w-full max-w-md">
+            <CardHeader className="text-center">
+              <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
+              <CardTitle className="text-red-700">Access Denied</CardTitle>
+              <CardDescription>
+                Only administrators can access this page.
+                {existingAdmins.length === 0 && (
+                  <span className="block mt-2 text-muted-foreground">No admin users exist yet. Contact your system administrator.</span>
+                )}
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      </LoggedInLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-2">
-            <Settings className="h-10 w-10" />
-            Admin Setup
-          </h1>
-          <p className="text-xl text-gray-600">
-            Manage user roles and permissions
-          </p>
-        </div>
+    <LoggedInLayout title="Admin Setup">
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 to-accent/10 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-secondary/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+        
+        <div className="relative z-10 container mx-auto px-4 py-6">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent mb-2 flex items-center justify-center gap-2">
+              <Settings className="h-10 w-10 text-primary" />
+              System Administration
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              Manage users, roles, categories, and system configuration
+            </p>
+          </div>
 
         {/* Role Assignment Card */}
         <Card className="mb-8">
@@ -582,7 +593,9 @@ export default function AdminSetupPage() {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
-    </div>
+        </AlertDialog>
+        </div>
+      </div>
+    </LoggedInLayout>
   );
 }

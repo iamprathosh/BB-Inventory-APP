@@ -67,28 +67,6 @@ export default function HomePage() {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Your construction management platform for projects and inventory
             </p>
-            
-            {/* Test Red Color Visibility */}
-            <div className="flex justify-center gap-4 mt-6">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                Primary Action (Red)
-              </Button>
-              <Button className="bg-red-600 hover:bg-red-700 text-white">
-                Hard-coded Red Test
-              </Button>
-              <Button className="bg-primary-red hover:bg-primary-red/90 text-white">
-                Primary Red Test
-              </Button>
-              <div className="px-4 py-2 bg-primary/10 border-2 border-primary rounded-lg">
-                <span className="text-primary font-semibold">B&B Red Color Test</span>
-              </div>
-              <div className="px-4 py-2 bg-red-100 border-2 border-red-600 rounded-lg">
-                <span className="text-red-600 font-semibold">Hard-coded Red Test</span>
-              </div>
-              <div className="px-4 py-2 bg-primary-red/10 border-2 border-primary-red rounded-lg">
-                <span className="text-primary-red font-semibold">Primary Red Hex Test</span>
-              </div>
-            </div>
           </div>
 
           {/* Setup Actions */}
