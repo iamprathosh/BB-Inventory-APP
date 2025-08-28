@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useConvexAuth } from "@/contexts/AuthContext";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
@@ -63,18 +64,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md shadow-lg border border-gray-200 bg-white">
+    <div className="min-h-screen flex items-center justify-center bg-background transition-colors duration-300 relative">
+      {/* Theme toggle in top-right corner */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      
+      <Card className="w-full max-w-md shadow-lg border bg-card transition-colors duration-300">
         <CardHeader className="text-center pb-6">
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-lg flex items-center justify-center bg-[#D10D38] shadow-lg">
-              <span className="text-2xl font-bold text-white">B&B</span>
+            <div className="w-16 h-16 rounded-lg flex items-center justify-center bg-primary shadow-lg transition-colors duration-300">
+              <span className="text-2xl font-bold text-primary-foreground">B&B</span>
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold mb-2 text-gray-900">
+          <CardTitle className="text-2xl font-bold mb-2 text-foreground">
             B&B Inventory
           </CardTitle>
-          <CardDescription className="text-gray-600">
+          <CardDescription className="text-muted-foreground">
             {isSignUp ? "Create your account" : "Sign in to your account"}
           </CardDescription>
         </CardHeader>

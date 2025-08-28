@@ -6,12 +6,14 @@ export const add = internalMutation({
     userId: v.id("users"),
     action: v.string(),
     details: v.string(),
+    projectId: v.optional(v.id("projects")),
   },
   handler: async (ctx, args) => {
     const logId = await ctx.db.insert("logs", {
       userId: args.userId,
       action: args.action,
       details: args.details,
+      projectId: args.projectId,
     });
     return logId;
   },

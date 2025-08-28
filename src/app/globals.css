@@ -1,140 +1,158 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
-  --font-heading: var(--font-montserrat);
-  --font-mono: ui-monospace, "SFMono-Regular", "Consolas", monospace;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-}
-
+/* BuildBuddy Theme Configuration with B&B Brand Colors */
 :root {
   --radius: 0.625rem;
-  /* Light gradient background */
-  --background: linear-gradient(135deg, #FBFBFB 0%, #FFFFFF 100%);
-  --foreground: #153275;
-  --card: #FFFFFF;
-  --card-foreground: #153275;
-  --popover: #FFFFFF;
-  --popover-foreground: #153275;
   
-  /* B&B PRIMARY BRAND COLORS - VERY VISUAL */
-  --primary: #D10D38;
-  --primary-foreground: #FFFFFF;
-  --secondary: #153275;
-  --secondary-foreground: #FFFFFF;
-  --muted: #F7F7F7;
-  --muted-foreground: #898989;
-  --accent: #0374EF;
-  --accent-foreground: #FFFFFF;
-  --destructive: #D10D38;
-  --destructive-foreground: #FFFFFF;
+  /* Light Theme - BuildBuddy Brand Colors */
+  --background: 0 0% 98%; /* #FBFBFB */
+  --foreground: 220 74% 25%; /* #153275 - B&B Blue */
   
-  /* Enhanced borders and inputs */
-  --border: #E5E7EB;
-  --input: #F9FAFB;
-  --ring: #D10D38;
+  /* Card Components */
+  --card: 0 0% 100%; /* Pure white */
+  --card-foreground: 220 74% 25%; /* #153275 */
   
-  /* Custom B&B Brand Variables */
-  --bb-primary: #D10D38;
-  --bb-primary-reverse: #153275;
-  --bb-accent-1: #0374EF;
-  --bb-accent-2: #886DE8;
-  --bb-accent-3: #F7C959;
-  --bb-accent-4: #EF7037;
-  --bb-black: #000000;
-  --bb-gray: #898989;
-  --bb-light: #FBFBFB;
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Popover Components */
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 74% 25%;
+  
+  /* B&B PRIMARY BRAND COLORS */
+  --primary: 349 89% 42%; /* #D10D38 - B&B Red */
+  --primary-foreground: 0 0% 100%; /* White text on red */
+  
+  --secondary: 220 74% 25%; /* #153275 - B&B Blue */
+  --secondary-foreground: 0 0% 100%; /* White text on blue */
+  
+  /* Accent Colors */
+  --accent: 217 91% 60%; /* #0374EF - B&B Light Blue */
+  --accent-foreground: 0 0% 100%;
+  
+  /* Muted Colors */
+  --muted: 210 20% 96%; /* Light gray background */
+  --muted-foreground: 220 13% 46%; /* Medium gray text */
+  
+  /* Destructive Colors */
+  --destructive: 0 84% 60%; /* Red for errors */
+  --destructive-foreground: 0 0% 100%;
+  
+  /* Border and Input Colors */
+  --border: 220 13% 91%; /* Light border */
+  --input: 0 0% 100%; /* White input background */
+  --ring: 349 89% 42%; /* Focus ring matches primary */
+  
+  /* Chart Colors - B&B Brand Themed */
+  --chart-1: 349 89% 42%; /* #D10D38 - B&B Red */
+  --chart-2: 217 91% 60%; /* #0374EF - B&B Blue */
+  --chart-3: 261 55% 68%; /* #886DE8 - B&B Purple */
+  --chart-4: 40 96% 68%; /* #F7C959 - B&B Yellow */
+  --chart-5: 16 86% 57%; /* #EF7037 - B&B Orange */
+  
+  /* Sidebar Colors - Light Mode */
+  --sidebar: 220 74% 25%; /* #153275 - B&B Blue background */
+  --sidebar-foreground: 0 0% 100%; /* White text */
+  --sidebar-primary: 349 89% 42%; /* #D10D38 - B&B Red for highlights */
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 220 60% 30%; /* Slightly lighter blue for hover */
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 220 60% 35%; /* Border color */
+  --sidebar-ring: 349 89% 42%; /* Focus ring */
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Dark Theme - BuildBuddy Brand Colors Optimized */
+  --background: 222 84% 5%; /* #0F172A - Dark slate */
+  --foreground: 210 40% 98%; /* #F8FAFC - Off white */
+  
+  /* Card Components - Dark Mode */
+  --card: 220 32% 18%; /* #1E293B - Slate 800 */
+  --card-foreground: 210 40% 98%;
+  
+  /* Popover Components - Dark Mode */
+  --popover: 220 32% 18%;
+  --popover-foreground: 210 40% 98%;
+  
+  /* B&B Brand Colors - Dark Mode Optimized */
+  --primary: 349 89% 55%; /* #E11D48 - Brighter red for better contrast */
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 217 32% 50%; /* #64748B - Slate for better readability */
+  --secondary-foreground: 210 40% 98%;
+  
+  /* Accent Colors - Dark Mode */
+  --accent: 217 91% 65%; /* #3B82F6 - Brighter blue for visibility */
+  --accent-foreground: 210 40% 98%;
+  
+  /* Muted Colors - Dark Mode */
+  --muted: 220 32% 18%; /* #1E293B */
+  --muted-foreground: 215 20% 65%; /* #94A3B8 - Slate 400 */
+  
+  /* Destructive Colors - Dark Mode */
+  --destructive: 0 63% 31%; /* Darker red for dark mode */
+  --destructive-foreground: 0 0% 100%;
+  
+  /* Border and Input Colors - Dark Mode */
+  --border: 220 32% 18%; /* #1E293B */
+  --input: 220 32% 18%;
+  --ring: 349 89% 55%; /* Brighter red for focus */
+  
+  /* Chart Colors - Dark Mode Enhanced */
+  --chart-1: 349 89% 55%; /* Brighter B&B Red */
+  --chart-2: 217 91% 65%; /* Brighter B&B Blue */
+  --chart-3: 261 55% 75%; /* Brighter B&B Purple */
+  --chart-4: 40 96% 75%; /* Brighter B&B Yellow */
+  --chart-5: 16 86% 65%; /* Brighter B&B Orange */
+  
+  /* Sidebar Colors - Dark Mode */
+  --sidebar: 222 84% 5%; /* #0F172A - Dark background */
+  --sidebar-foreground: 210 40% 98%; /* #F8FAFC - Light text */
+  --sidebar-primary: 217 91% 65%; /* #3B82F6 - Blue for highlights */
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 220 32% 18%; /* #1E293B - Hover background */
+  --sidebar-accent-foreground: 210 40% 98%;
+  --sidebar-border: 220 25% 35%; /* #334155 - Border */
+  --sidebar-ring: 217 32% 50%; /* #64748B - Focus ring */
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: hsl(var(--border));
+    outline-color: color-mix(in srgb, hsl(var(--ring)) 50%, transparent);
   }
   body {
-    @apply bg-background text-foreground;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Smooth theme transitions for all elements */
+  *,
+  *::before,
+  *::after {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Ensure images and logos adapt to dark mode */
+  img {
+    transition: opacity 0.3s ease;
+  }
+  
+  /* Custom scrollbar styling for both themes */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground));
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--accent));
   }
 }

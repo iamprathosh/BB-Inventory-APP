@@ -3,6 +3,23 @@ import { mutation } from "./_generated/server";
 export const createSampleData = mutation({
   args: {},
   handler: async (ctx) => {
+    // Get current user for transactions
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     // Check if we already have sample data
     const existingProducts = await ctx.db.query("products").collect();
     if (existingProducts.length > 0) {
@@ -143,10 +160,21 @@ export const createSampleData = mutation({
       }
     ];
 
-    // Insert products
+    // Insert products with MAUC initialization
     const productIds = [];
     for (const product of sampleProducts) {
-      const productId = await ctx.db.insert("products", product);
+      const initialCost = product.costPrice || product.price;
+      const productWithMAUC = {
+        ...product,
+        // Add required MAUC fields
+        movingAverageCost: initialCost,
+        totalCostInStock: product.quantity * initialCost,
+        totalUnitsInStock: product.quantity,
+        unitOfMeasure: "pcs", // Default unit
+        lastPurchasePrice: initialCost,
+        lastPurchaseDate: Date.now(),
+      };
+      const productId = await ctx.db.insert("products", productWithMAUC);
       productIds.push(productId);
     }
 
@@ -171,7 +199,8 @@ export const createSampleData = mutation({
         quantity: Math.floor(Math.random() * 10) + 1,
         unitPrice: 20 + Math.random() * 100,
         date: transactionDate,
-        reference: `TXN-${1000 + i}`
+        reference: `TXN-${1000 + i}`,
+        userId: user._id // Add the required userId field
       };
       
       sampleTransactions.push(transaction);
@@ -183,5 +212,77 @@ export const createSampleData = mutation({
     }
 
     return "Sample data created successfully!";
+  }
+});
+
+// Migration function to fix existing products with missing MAUC fields
+export const migrateProductsForMAUC = mutation({
+  args: {},
+  handler: async (ctx) => {
+    // Get all products that might be missing required fields
+    const products = await ctx.db.query("products").collect();
+    let updatedCount = 0;
+
+    for (const product of products) {
+      const needsUpdate = !product.movingAverageCost || 
+                         !product.totalCostInStock || 
+                         !product.totalUnitsInStock || 
+                         !product.unitOfMeasure;
+
+      if (needsUpdate) {
+        const costPrice = product.costPrice || product.price || 0;
+        const quantity = product.quantity || 0;
+        
+        await ctx.db.patch(product._id, {
+          movingAverageCost: product.movingAverageCost || costPrice,
+          totalCostInStock: product.totalCostInStock || (quantity * costPrice),
+          totalUnitsInStock: product.totalUnitsInStock || quantity,
+          unitOfMeasure: product.unitOfMeasure || "pcs",
+          lastPurchasePrice: product.lastPurchasePrice || costPrice,
+          lastPurchaseDate: product.lastPurchaseDate || Date.now(),
+        });
+        updatedCount++;
+      }
+    }
+
+    return `Updated ${updatedCount} products with MAUC fields`;
+  }
+});
+
+// Migration function to fix existing inventory transactions without userId
+export const migrateInventoryTransactions = mutation({
+  args: {},
+  handler: async (ctx) => {
+    // Get current user for migration
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Get all inventory transactions without userId
+    const transactions = await ctx.db.query("inventoryTransactions").collect();
+    let updatedCount = 0;
+
+    for (const transaction of transactions) {
+      if (!transaction.userId) {
+        await ctx.db.patch(transaction._id, {
+          userId: user._id,
+        });
+        updatedCount++;
+      }
+    }
+
+    return `Updated ${updatedCount} inventory transactions with userId`;
   }
 });

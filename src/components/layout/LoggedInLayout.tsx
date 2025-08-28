@@ -9,7 +9,13 @@ import {
   Package, 
   FileText, 
   LogOut,
-  Menu
+  Menu,
+  Users,
+  FolderOpen,
+  Wrench,
+  DollarSign,
+  Settings,
+  Truck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -18,6 +24,7 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface LoggedInLayoutProps {
   children: React.ReactNode;
@@ -63,6 +70,23 @@ export function LoggedInLayout({ children, title = "Dashboard" }: LoggedInLayout
       name: "Inventory",
       href: "/inventory",
       icon: Package,
+      description: "Manage products, categories & units"
+    },
+    {
+      name: "Worker Ops",
+      href: "/worker",
+      icon: Wrench,
+      description: "Take Out, Stock In, Return"
+    },
+    {
+      name: "Projects",
+      href: "/projects",
+      icon: FolderOpen,
+    },
+    {
+      name: "Vendors",
+      href: "/vendors",
+      icon: Users,
     },
     {
       name: "Logs",
@@ -72,22 +96,24 @@ export function LoggedInLayout({ children, title = "Dashboard" }: LoggedInLayout
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #FBFBFB 0%, #FFFFFF 100%)' }}>
+    <div className="min-h-screen bg-background transition-colors duration-300">
       {/* Sidebar */}
-      <div className="fixed inset-y-0 left-0 w-64 shadow-2xl" style={{ background: 'linear-gradient(180deg, #153275 0%, #0d2455 100%)' }}>
-        <div className="flex h-20 items-center justify-center border-b border-white/10 px-4">
-          <img 
-            src="/images/logo/logo-full-white.png" 
-            alt="B&B Logo" 
-            className="h-12 w-auto"
-            onError={(e) => {
-              // Fallback to text if image fails
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              target.nextElementSibling?.classList.remove('hidden');
-            }}
-          />
-          <h1 className="font-heading text-xl font-bold text-white hidden">B&B Inventory</h1>
+      <div className="fixed inset-y-0 left-0 w-64 bg-secondary dark:bg-slate-900 shadow-2xl border-r border-border transition-colors duration-300">
+        <div className="flex h-20 items-center justify-center border-b border-white/10 dark:border-slate-700 px-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-lg">B</span>
+            </div>
+            <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-lg">B</span>
+            </div>
+          </div>
+          <div className="ml-3">
+            <h1 className="font-heading text-lg font-bold text-secondary-foreground leading-tight">
+              <span className="text-primary">Build</span><span className="text-accent">Buddy</span>
+            </h1>
+            <p className="text-xs text-secondary-foreground/70">Inventory System</p>
+          </div>
         </div>
         
         <nav className="mt-8 px-4">
@@ -96,14 +122,14 @@ export function LoggedInLayout({ children, title = "Dashboard" }: LoggedInLayout
               <Link
                 key={item.name}
                 href={item.href}
-                className="flex items-center space-x-3 rounded-lg px-4 py-3 text-white font-medium hover:bg-white/20 transition-all duration-200 group border border-transparent hover:border-white/30"
+                className="flex items-center space-x-3 rounded-lg px-4 py-3 text-secondary-foreground font-medium hover:bg-white/20 dark:hover:bg-slate-700/50 transition-all duration-200 group border border-transparent hover:border-white/30 dark:hover:border-slate-600 hover:text-white"
                 style={{
                   background: 'rgba(255, 255, 255, 0.1)',
                   backdropFilter: 'blur(10px)'
                 }}
               >
-                <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                <span className="group-hover:translate-x-1 transition-transform">{item.name}</span>
+                <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />
+                <span className="group-hover:translate-x-1 transition-transform duration-200">{item.name}</span>
               </Link>
             ))}
           </div>
@@ -113,31 +139,31 @@ export function LoggedInLayout({ children, title = "Dashboard" }: LoggedInLayout
       {/* Main content */}
       <div className="pl-64">
         {/* Header */}
-        <header className="h-16 shadow-lg flex items-center justify-between px-6" style={{
-          background: 'linear-gradient(90deg, #FFFFFF 0%, #F7F7F7 100%)',
-          borderBottom: '3px solid #D10D38'
-        }}>
-          <h2 className="font-heading text-2xl font-bold" style={{ color: '#153275' }}>
+        <header className="h-16 bg-card dark:bg-slate-800 border-b-4 border-primary shadow-lg flex items-center justify-between px-6 transition-colors duration-300">
+          <h2 className="font-heading text-2xl font-bold text-foreground">
             {title}
           </h2>
           
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm">
-                <Menu className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleLogout}>
-                <LogOut className="mr-2 h-4 w-4" />
-                Log Out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center space-x-3">
+            <ThemeToggle />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="hover:bg-accent hover:text-accent-foreground transition-colors">
+                  <Menu className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </header>
 
         {/* Page content */}
-        <main className="p-6">
+        <main className="p-6 bg-background transition-colors duration-300">
           {children}
         </main>
       </div>

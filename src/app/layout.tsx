@@ -4,6 +4,7 @@ import "./globals.css";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -26,16 +27,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${montserrat.variable} antialiased`}
       >
-        <ConvexClientProvider>
-          <AuthProvider>
-            {children}
-            <Toaster />
-          </AuthProvider>
-        </ConvexClientProvider>
+        <ThemeProvider>
+          <ConvexClientProvider>
+            <AuthProvider>
+              {children}
+              <Toaster />
+            </AuthProvider>
+          </ConvexClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

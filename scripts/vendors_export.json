@@ -1,0 +1,563 @@
+[
+  {
+    "name": "Arman Supply Inc.",
+    "email": "armansupplyinc@gmail.com",
+    "phone": "(845) 358-6446",
+    "address": "381 Route 59",
+    "city": "West Nyack",
+    "state": "NY",
+    "zipCode": "10994",
+    "contactPerson": "Lou",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Supplies",
+      "Building Materials"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Azores Concrete Pumping LLC",
+    "email": "simpac24@aol.com",
+    "phone": "(914) 804-9101",
+    "address": "852 Franklin Ave.",
+    "city": "Franklin Lakes",
+    "state": "NJ",
+    "zipCode": "7417",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "Concrete",
+      "Ready Mix"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Beckerle Lumber Supply Co Inc",
+    "email": "office@beckerlelumber.com",
+    "phone": "(845) 359-4633",
+    "address": "P.O Box 649 3 Chestnut St",
+    "city": "Spring Valley",
+    "state": "NY",
+    "zipCode": "10977",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "Lumber",
+      "Framing",
+      "General Supplies",
+      "Building Materials"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Bonded Concrete",
+    "email": "ar@bondedconcrete.com",
+    "phone": "(518) 273-5800",
+    "address": "PO Box 189",
+    "city": "Watervliet",
+    "state": "NY",
+    "zipCode": "12189",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "Concrete",
+      "Ready Mix"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Brewster Transit Mix",
+    "email": "Marilyn.tyree@brewstertransitmix.com",
+    "phone": "(845) 359-4633",
+    "address": "31 Field Lane",
+    "city": "Brewster",
+    "state": "NY",
+    "zipCode": "10509",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Byram Concrete & Supply LLC",
+    "email": "billing@byramconcrete.com",
+    "phone": "(845) 279-4270",
+    "address": "PO Box 410",
+    "city": "Brewster",
+    "state": "NY",
+    "zipCode": "10509",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "Concrete",
+      "Ready Mix",
+      "General Supplies",
+      "Building Materials"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Dakota Concrete Services",
+    "email": "AR@DAKOTA-CONCRETE.COM",
+    "phone": "(914) 682-4477",
+    "address": "51 Route 100",
+    "city": "Briarcliff Manor",
+    "state": "NY",
+    "zipCode": "10510",
+    "contactPerson": "",
+    "vendorType": "service",
+    "specialties": [
+      "Concrete",
+      "Ready Mix"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Danbury Concrete Pumping LLC",
+    "email": "vcarvalho@danburyconcretepumpingllc.com",
+    "phone": "(203) 791-8087",
+    "address": "2 Durham Road",
+    "city": "Danbury",
+    "state": "CT",
+    "zipCode": "6811",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "Concrete",
+      "Ready Mix"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Dick's Concrete Company",
+    "email": "dicksconcreteny@aol.com",
+    "phone": "(845) 374-5966",
+    "address": "1053 County Route 37",
+    "city": "New Hampton",
+    "state": "NY",
+    "zipCode": "10958",
+    "contactPerson": "Dick",
+    "vendorType": "supplier",
+    "specialties": [
+      "Concrete",
+      "Ready Mix"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "E. Tetz and Sons",
+    "email": "mainoffice@etetz-sons.com",
+    "phone": "(845) 692-4486",
+    "address": "130 Crotty Road",
+    "city": "Middletown",
+    "state": "NY",
+    "zipCode": "10941",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Grade Industrial Supply",
+    "email": "ar@gradeindustrial.com",
+    "phone": "(845) 765-8997",
+    "address": "1418 RT",
+    "city": "Wappingers Falls",
+    "state": "NY",
+    "zipCode": "12590",
+    "contactPerson": "Rick",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Supplies",
+      "Building Materials"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Hudson Valley Concrete Pumping Inc.",
+    "email": "sbhvcc@gmail.com",
+    "phone": "(845) 778-2986",
+    "address": "P.O. BOX 575",
+    "city": "Wallkill",
+    "state": "NY",
+    "zipCode": "12589",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "Concrete",
+      "Ready Mix"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Prime Rebar",
+    "email": "office@primerebar.com",
+    "phone": "(908) 707-1234",
+    "address": "36 South Adamsville Rd",
+    "city": "Bridgewater",
+    "state": "NJ",
+    "zipCode": "8807",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Rockland Transit Mix Inc.",
+    "email": "rocktmix@verizon.net",
+    "phone": "(845) 358-6446",
+    "address": "381 Route 59",
+    "city": "West Nyack",
+    "state": "NY",
+    "zipCode": "10994",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Salomone Redi Mix of NY LLC",
+    "email": "mprzychodzki@salomone.com",
+    "phone": "(973) 305-0022",
+    "address": "17 Demarest Drive",
+    "city": "Wayne",
+    "state": "NJ",
+    "zipCode": "7470",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Smith Bros. Concrete",
+    "email": "sbhvcc@gmail.com",
+    "phone": "(845) 778-2997",
+    "address": "P.O. BOX 575",
+    "city": "Wallkill",
+    "state": "NY",
+    "zipCode": "12589",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "Concrete",
+      "Ready Mix"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Smyrna Ready Mix - SRM Concrete",
+    "email": "jvaughn@smyrnareadymix.com",
+    "phone": "(615) 355-1028",
+    "address": "1000 Hollingshead Circle",
+    "city": "Murfreesboro",
+    "state": "TN",
+    "zipCode": "37129",
+    "contactPerson": "Jennifer",
+    "vendorType": "supplier",
+    "specialties": [
+      "Concrete",
+      "Ready Mix"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Stateside Forming Inc.",
+    "email": "david.gallagher@statesideforming.com",
+    "phone": "(631) 458-7019",
+    "address": "PO Box 630",
+    "city": "West Haverstraw",
+    "state": "NY",
+    "zipCode": "10993",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Sullivan Concrete Inc",
+    "email": "ar@mastenenterprises.com",
+    "phone": "(845) 250-4001",
+    "address": "1936 State Route 17B",
+    "city": "White Lake",
+    "state": "NY",
+    "zipCode": "12786",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "Concrete",
+      "Ready Mix"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Sunbelt Rentals INC.",
+    "email": "",
+    "phone": "",
+    "address": "PO BOX 409211",
+    "city": "Atlanta",
+    "state": "GA",
+    "zipCode": "30384",
+    "contactPerson": "",
+    "vendorType": "service",
+    "specialties": [
+      "Equipment Rental"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "White Cap",
+    "email": "Stephany.Goyette@whitecap.com",
+    "phone": "(518) 438-3976",
+    "address": "PO Box 4944",
+    "city": "Orlando",
+    "state": "FL",
+    "zipCode": "32802",
+    "contactPerson": "Stephany Goyette",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Townhouse Office Park Associates",
+    "email": "joesapienza@ymail.com",
+    "phone": "",
+    "address": "",
+    "city": "",
+    "state": "",
+    "zipCode": "",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "PlanGrid Inc.",
+    "email": "",
+    "phone": "",
+    "address": "Post Office Box 1672",
+    "city": "Carol Stream",
+    "state": "IL",
+    "zipCode": "60132",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Local 754 Union",
+    "email": "",
+    "phone": "",
+    "address": "",
+    "city": "",
+    "state": "",
+    "zipCode": "",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Local 235 Union",
+    "email": "",
+    "phone": "",
+    "address": "41 Knollwood Road",
+    "city": "Elmsford",
+    "state": "NY",
+    "zipCode": "10523",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "John To go",
+    "email": "gittyb@johntogo.com",
+    "phone": "(845) 362-2300",
+    "address": "21 Van Natta Dr",
+    "city": "Ringwood",
+    "state": "NJ",
+    "zipCode": "7456",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Foundation Software",
+    "email": "",
+    "phone": "",
+    "address": "17800 Royalton Rd",
+    "city": "Strongsville",
+    "state": "OH",
+    "zipCode": "44136",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Colliers Engineering & Design Inc",
+    "email": "",
+    "phone": "(732) 383-1950",
+    "address": "101 Crawfords Corner Road",
+    "city": "Holmdel",
+    "state": "NJ",
+    "zipCode": "7733",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Carlo Minuto Carting Company",
+    "email": "minutocartingco@gmail.com",
+    "phone": "(845) 353-2220",
+    "address": "PO Box 234",
+    "city": "West Nyack",
+    "state": "NY",
+    "zipCode": "10994",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "American Compressed Gases Inc.",
+    "email": "catencio@acgdic.com",
+    "phone": "(201) 767-3200",
+    "address": "PO BOX 715",
+    "city": "Westwood",
+    "state": "NJ",
+    "zipCode": "7675",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "All Brite Cleaning Co.",
+    "email": "",
+    "phone": "(845) 623-6423",
+    "address": "12 Spur Dr",
+    "city": "Nanuet",
+    "state": "NJ",
+    "zipCode": "10954",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  },
+  {
+    "name": "Abbey Ice & Spring Water",
+    "email": "",
+    "phone": "(845) 356-1700",
+    "address": "69 W. Church St.",
+    "city": "Spring Valley",
+    "state": "NY",
+    "zipCode": "10977",
+    "contactPerson": "",
+    "vendorType": "supplier",
+    "specialties": [
+      "General Construction"
+    ],
+    "paymentTerms": "Net 30",
+    "isActive": true,
+    "certifications": []
+  }
+]

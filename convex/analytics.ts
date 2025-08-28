@@ -7,6 +7,7 @@ export const getDashboardAnalytics = query({
     const products = await ctx.db.query("products").collect();
     const purchaseOrders = await ctx.db.query("purchaseOrders").collect();
     const transactions = await ctx.db.query("inventoryTransactions").collect();
+    const projects = await ctx.db.query("projects").collect();
     
     // Calculate total inventory value
     const totalInventoryValue = products.reduce((sum, product) => {
@@ -87,6 +88,44 @@ export const getDashboardAnalytics = query({
       .sort((a, b) => b.value - a.value)
       .slice(0, 5);
 
+    // Recent inventory activity (last 7 days)
+    const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    const recentActivity = transactions
+      .filter(t => t.date >= sevenDaysAgo)
+      .sort((a, b) => b.date - a.date)
+      .slice(0, 10);
+
+    // Get project details for recent activity
+    const recentActivityWithDetails = await Promise.all(
+      recentActivity.map(async (transaction) => {
+        const product = await ctx.db.get(transaction.productId);
+        const project = transaction.projectId ? await ctx.db.get(transaction.projectId) : null;
+        const user = transaction.userId ? await ctx.db.get(transaction.userId) : null;
+        
+        return {
+          ...transaction,
+          product,
+          project,
+          user,
+        };
+      })
+    );
+
+    // Active projects summary
+    const activeProjects = projects.filter(p => p.status === "active");
+    const projectSummary = activeProjects.map(project => {
+      const projectTransactions = transactions.filter(t => t.projectId === project._id);
+      const totalCost = projectTransactions.reduce((sum, t) => 
+        sum + (Math.abs(t.quantity) * t.unitPrice), 0
+      );
+      
+      return {
+        ...project,
+        totalCost,
+        transactionCount: projectTransactions.length,
+      };
+    });
+
     return {
       kpis: {
         totalInventoryValue,
@@ -94,7 +133,8 @@ export const getDashboardAnalytics = query({
         stockAlerts: stockAlerts.length,
         openPOs: openPOs.length,
         totalProducts: products.length,
-        totalCategories: Object.keys(categoryData).length
+        totalCategories: Object.keys(categoryData).length,
+        activeProjects: activeProjects.length,
       },
       charts: {
         categoryBreakdown: Object.values(categoryData),
@@ -116,7 +156,9 @@ export const getDashboardAnalytics = query({
           totalAmount: po.totalAmount,
           orderDate: po.orderDate
         }))
-      }
+      },
+      recentActivity: recentActivityWithDetails,
+      activeProjects: projectSummary,
     };
   }
 });
@@ -142,5 +184,65 @@ export const getInventoryTrends = query({
         { name: 'High Stock', value: stockDistribution.highStock, color: '#0374EF' } // B&B Accent 1 Blue
       ]
     };
+  }
+});
+
+export const getRecentInventoryActivity = query({
+  args: { days: v.optional(v.number()) },
+  handler: async (ctx, args) => {
+    const days = args.days || 7;
+    const startDate = Date.now() - (days * 24 * 60 * 60 * 1000);
+    
+    const transactions = await ctx.db
+      .query("inventoryTransactions")
+      .withIndex("by_date", (q) => q.gte("date", startDate))
+      .order("desc")
+      .collect();
+
+    // Get details for each transaction
+    const transactionsWithDetails = await Promise.all(
+      transactions.map(async (transaction) => {
+        const product = await ctx.db.get(transaction.productId);
+        const project = transaction.projectId ? await ctx.db.get(transaction.projectId) : null;
+        const user = transaction.userId ? await ctx.db.get(transaction.userId) : null;
+        
+        return {
+          ...transaction,
+          product,
+          project,
+          user,
+        };
+      })
+    );
+
+    return transactionsWithDetails;
+  }
+});
+
+export const getProjectActivities = query({
+  args: {},
+  handler: async (ctx) => {
+    // This would integrate with external REST API
+    // For now, we'll return mock data that would come from the external system
+    const mockProjectActivities = [
+      {
+        projectId: "proj-001",
+        projectName: "Kitchen Renovation",
+        activities: [
+          { type: "task_completed", description: "Cabinet installation completed", date: Date.now() - 86400000 },
+          { type: "material_ordered", description: "Countertop material ordered", date: Date.now() - 172800000 },
+        ]
+      },
+      {
+        projectId: "proj-002", 
+        projectName: "Bathroom Remodel",
+        activities: [
+          { type: "task_started", description: "Tile work started", date: Date.now() - 43200000 },
+          { type: "inspection_scheduled", description: "Final inspection scheduled", date: Date.now() - 86400000 },
+        ]
+      }
+    ];
+
+    return mockProjectActivities;
   }
 });
