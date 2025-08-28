@@ -82,7 +82,7 @@ export default function ProjectAnalyticsPage() {
     );
   }
 
-  const { project, totalInventoryCost, userActivity, consumptionData, totalTransactions } = analytics;
+  const { project: projectData, totalInventoryCost, userActivity, consumptionData, totalTransactions } = analytics;
 
   // Prepare chart data
   const consumptionChartData = [

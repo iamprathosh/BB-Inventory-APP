@@ -6,7 +6,56 @@
   /* Base border radius */
   --radius: 0.625rem;
   
-  /* Color definitions using Tailwind CSS 4 syntax */
+  /* Dark mode colors (swapped to fix theme issue) */
+  --color-background: #0F172A;
+  --color-foreground: #F8FAFC;
+  
+  --color-card: #1E293B;
+  --color-card-foreground: #F8FAFC;
+  
+  --color-popover: #1E293B;
+  --color-popover-foreground: #F8FAFC;
+  
+  /* B&B PRIMARY BRAND COLORS */
+  --color-primary: #E11D48; /* Brighter red for dark mode */
+  --color-primary-foreground: #FFFFFF;
+  
+  --color-secondary: #64748B;
+  --color-secondary-foreground: #F8FAFC;
+  
+  --color-accent: #3B82F6;
+  --color-accent-foreground: #F8FAFC;
+  
+  --color-muted: #334155;
+  --color-muted-foreground: #94A3B8;
+  
+  --color-destructive: #E11D48;
+  --color-destructive-foreground: #FFFFFF;
+  
+  --color-border: #475569;
+  --color-input: #334155;
+  --color-ring: #E11D48;
+  
+  /* Chart colors */
+  --color-chart-1: #E11D48;
+  --color-chart-2: #3B82F6;
+  --color-chart-3: #A855F7;
+  --color-chart-4: #F59E0B;
+  --color-chart-5: #EF4444;
+  
+  /* Sidebar colors */
+  --color-sidebar: #1E293B; /* Dark sidebar */
+  --color-sidebar-foreground: #F8FAFC;
+  --color-sidebar-primary: #3B82F6;
+  --color-sidebar-primary-foreground: #FFFFFF;
+  --color-sidebar-accent: #334155;
+  --color-sidebar-accent-foreground: #F8FAFC;
+  --color-sidebar-border: #475569;
+  --color-sidebar-ring: #64748B;
+}
+
+@theme dark {
+  /* Light mode colors (swapped to fix theme issue) */
   --color-background: #FBFBFB;
   --color-foreground: #153275; /* B&B Blue */
   
@@ -53,53 +102,6 @@
   --color-sidebar-border: #2a4f7c;
   --color-sidebar-ring: #D10D38;
 }
-
-@theme dark {
-  /* Dark mode color overrides */
-  --color-background: #0F172A;
-  --color-foreground: #F8FAFC;
-  
-  --color-card: #1E293B;
-  --color-card-foreground: #F8FAFC;
-  
-  --color-popover: #1E293B;
-  --color-popover-foreground: #F8FAFC;
-  
-  --color-primary: #E11D48; /* Brighter red for dark mode */
-  --color-primary-foreground: #FFFFFF;
-  
-  --color-secondary: #64748B;
-  --color-secondary-foreground: #F8FAFC;
-  
-  --color-accent: #3B82F6;
-  --color-accent-foreground: #F8FAFC;
-  
-  --color-muted: #334155;
-  --color-muted-foreground: #94A3B8;
-  
-  --color-destructive: #E11D48;
-  --color-destructive-foreground: #FFFFFF;
-  
-  --color-border: #475569;
-  --color-input: #334155;
-  --color-ring: #E11D48;
-  
-  --color-chart-1: #E11D48;
-  --color-chart-2: #3B82F6;
-  --color-chart-3: #A855F7;
-  --color-chart-4: #F59E0B;
-  --color-chart-5: #EF4444;
-  
-  --color-sidebar: #1E293B; /* Dark sidebar in dark mode */
-  --color-sidebar-foreground: #F8FAFC;
-  --color-sidebar-primary: #3B82F6;
-  --color-sidebar-primary-foreground: #FFFFFF;
-  --color-sidebar-accent: #334155;
-  --color-sidebar-accent-foreground: #F8FAFC;
-  --color-sidebar-border: #475569;
-  --color-sidebar-ring: #64748B;
-}
-
 @layer base {
   * {
     border-color: var(--color-border);

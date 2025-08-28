@@ -1,50 +1,57 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
+// Function to create or get user after authentication
 export const store = mutation({
-  args: {},
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+  args: {
+    name: v.optional(v.string()),
+    email: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
       throw new Error("Called storeUser without authentication present");
     }
 
-    // Check if user already exists
-    const user = await ctx.db
+    // Check if user already exists in our users table
+    const existingUser = await ctx.db
       .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
-      )
+      .withIndex("by_auth_id", (q) => q.eq("authId", userId))
       .unique();
 
-    if (user !== null) {
-      // If the user already exists, return their ID
-      return user._id;
+    if (existingUser) {
+      return existingUser._id;
     }
 
-    // If the user doesn't exist, create a new user
-    const userId = await ctx.db.insert("users", {
-      name: identity.name ?? "Anonymous",
-      tokenIdentifier: identity.tokenIdentifier,
+    // Check if this is the first user (to make them admin)
+    const existingUsers = await ctx.db.query("users").collect();
+    const isFirstUser = existingUsers.length === 0;
+
+    // Create new user in our users table
+    const newUserId = await ctx.db.insert("users", {
+      authId: userId,
+      name: args.name || "Anonymous",
+      email: args.email || "",
+      role: isFirstUser ? "admin" : "worker", // First user becomes admin
+      isActive: true,
     });
 
-    return userId;
+    return newUserId;
   },
 });
 
 export const current = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
       return null;
     }
 
     const user = await ctx.db
       .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
-      )
+      .withIndex("by_auth_id", (q) => q.eq("authId", userId))
       .unique();
 
     return user;
@@ -57,17 +64,15 @@ export const updateUserRole = mutation({
     role: v.string(), // "worker", "supervisor", "admin"
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+    const authUserId = await getAuthUserId(ctx);
+    if (!authUserId) {
       throw new Error("Not authenticated");
     }
 
     // Get current user to check if they can update roles
     const currentUser = await ctx.db
       .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
-      )
+      .withIndex("by_auth_id", (q) => q.eq("authId", authUserId))
       .unique();
 
     // Only allow admins to update roles, or if no admin exists yet (first admin setup)
@@ -93,17 +98,15 @@ export const updateUserRole = mutation({
 export const listUsers = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+    const authUserId = await getAuthUserId(ctx);
+    if (!authUserId) {
       return [];
     }
 
     // Get current user to check if they can list users
     const currentUser = await ctx.db
       .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
-      )
+      .withIndex("by_auth_id", (q) => q.eq("authId", authUserId))
       .unique();
 
     // Allow listing users if no admin exists yet (for initial setup) or if user is admin

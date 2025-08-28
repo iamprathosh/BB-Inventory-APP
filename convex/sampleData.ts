@@ -1,19 +1,18 @@
 import { mutation } from "./_generated/server";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 export const createSampleData = mutation({
   args: {},
   handler: async (ctx) => {
     // Get current user for transactions
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
       throw new Error("Not authenticated");
     }
 
     const user = await ctx.db
       .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
-      )
+      .withIndex("by_auth_id", (q) => q.eq("authId", userId))
       .unique();
 
     if (!user) {
@@ -254,16 +253,14 @@ export const migrateInventoryTransactions = mutation({
   args: {},
   handler: async (ctx) => {
     // Get current user for migration
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
       throw new Error("Not authenticated");
     }
 
     const user = await ctx.db
       .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
-      )
+      .withIndex("by_auth_id", (q) => q.eq("authId", userId))
       .unique();
 
     if (!user) {

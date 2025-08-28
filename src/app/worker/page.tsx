@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
 import { LoggedInLayout } from "@/components/layout/LoggedInLayout";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
@@ -142,7 +143,7 @@ export default function WorkerOperationsPage() {
                 continue;
               }
               await pullInventory({
-                productId: product._id,
+                productId: product._id as Id<"products">,
                 quantity: qty,
                 notes: notes || `Worker pulled ${qty} ${product.unitOfMeasure} of ${product.name}`,
               });
@@ -150,7 +151,7 @@ export default function WorkerOperationsPage() {
               
             case "receive":
               await receiveInventory({
-                productId: product._id,
+                productId: product._id as Id<"products">,
                 quantity: qty,
                 unitPrice: 1, // Default price - will be updated by supervisor
                 notes: notes || `Worker received ${qty} ${product.unitOfMeasure} of ${product.name} - Price to be updated`,
@@ -159,7 +160,7 @@ export default function WorkerOperationsPage() {
               
             case "return":
               await returnInventory({
-                productId: product._id,
+                productId: product._id as Id<"products">,
                 quantity: qty,
                 notes: notes || `Worker returned ${qty} ${product.unitOfMeasure} of ${product.name}`,
               });
@@ -296,7 +297,7 @@ export default function WorkerOperationsPage() {
             {/* Filters */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
                 <Input
                   type="text"
                   placeholder="Search items..."
@@ -306,7 +307,7 @@ export default function WorkerOperationsPage() {
                 />
               </div>
               
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <Select value={selectedCategory || "all"} onValueChange={setSelectedCategory}>
                 <SelectTrigger className="h-12">
                   <SelectValue placeholder="Filter by category" />
                 </SelectTrigger>
@@ -373,13 +374,13 @@ export default function WorkerOperationsPage() {
                             className="w-12 h-12 object-cover rounded-lg mx-auto mb-2"
                           />
                         ) : (
-                          <div className="bg-gray-100 rounded-lg p-3 mb-2 w-12 h-12 mx-auto flex items-center justify-center">
-                            <Package className="h-6 w-6 text-gray-400" />
+                          <div className="bg-muted rounded-lg p-3 mb-2 w-12 h-12 mx-auto flex items-center justify-center">
+                            <Package className="h-6 w-6 text-muted-foreground" />
                           </div>
                         )}
                         
                         <h4 className="font-bold text-sm mb-1">{product.name}</h4>
-                        <p className="text-xs text-gray-600">SKU: {product.sku}</p>
+                        <p className="text-xs text-muted-foreground">SKU: {product.sku}</p>
                         
                         <div className="flex items-center justify-center gap-1 mt-2">
                           <span className="text-sm font-medium">
@@ -433,14 +434,14 @@ export default function WorkerOperationsPage() {
 
             {filteredProducts.length === 0 && (
               <div className="text-center py-12">
-                <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-xl text-gray-500">No items found</p>
+                <Package className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
+                <p className="text-xl text-muted-foreground">No items found</p>
               </div>
             )}
 
             {/* Bottom Actions */}
             {selectedProducts.length > 0 && (
-              <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg p-4">
+              <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-lg p-4 transition-colors duration-300">
                 <div className="max-w-6xl mx-auto">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div className="md:col-span-2">

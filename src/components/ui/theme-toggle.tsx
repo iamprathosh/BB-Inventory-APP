@@ -13,13 +13,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Show loading state while mounting
   if (!mounted) {
     return (
       <Button variant="outline" size="sm" className="h-8 w-8 px-0">
@@ -42,24 +43,30 @@ export function ThemeToggle() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-2xl backdrop-blur-sm">
+      <DropdownMenuContent align="end" className="w-40 bg-popover border-border shadow-2xl backdrop-blur-sm">
         <DropdownMenuItem 
           onClick={() => setTheme("light")}
-          className={`cursor-pointer ${theme === "light" ? "bg-accent text-accent-foreground" : ""}`}
+          className={`cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors ${
+            theme === "light" ? "bg-accent text-accent-foreground" : "text-popover-foreground"
+          }`}
         >
           <Sun className="mr-2 h-4 w-4" />
           Light
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => setTheme("dark")}
-          className={`cursor-pointer ${theme === "dark" ? "bg-accent text-accent-foreground" : ""}`}
+          className={`cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors ${
+            theme === "dark" ? "bg-accent text-accent-foreground" : "text-popover-foreground"
+          }`}
         >
           <Moon className="mr-2 h-4 w-4" />
           Dark
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => setTheme("system")}
-          className={`cursor-pointer ${theme === "system" ? "bg-accent text-accent-foreground" : ""}`}
+          className={`cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors ${
+            theme === "system" ? "bg-accent text-accent-foreground" : "text-popover-foreground"
+          }`}
         >
           <Monitor className="mr-2 h-4 w-4" />
           System

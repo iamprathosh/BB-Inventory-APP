@@ -9,9 +9,12 @@
  */
 
 import type * as analytics from "../analytics.js";
+import type * as auth from "../auth.js";
 import type * as categories from "../categories.js";
+import type * as clearData from "../clearData.js";
 import type * as emails from "../emails.js";
 import type * as files from "../files.js";
+import type * as importMasterList from "../importMasterList.js";
 import type * as importVendors from "../importVendors.js";
 import type * as logs from "../logs.js";
 import type * as mauc from "../mauc.js";
@@ -38,9 +41,12 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   analytics: typeof analytics;
+  auth: typeof auth;
   categories: typeof categories;
+  clearData: typeof clearData;
   emails: typeof emails;
   files: typeof files;
+  importMasterList: typeof importMasterList;
   importVendors: typeof importVendors;
   logs: typeof logs;
   mauc: typeof mauc;

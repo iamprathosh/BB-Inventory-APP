@@ -11,10 +11,11 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="system"
-      enableSystem={true}
-      disableTransitionOnChange={false}
+      defaultTheme="light"
+      enableSystem={false}
+      disableTransitionOnChange
       storageKey="bb-inventory-theme"
+      forcedTheme="light"
     >
       {children}
     </NextThemesProvider>

@@ -154,16 +154,15 @@ export function LoggedInLayout({ children, title = "Dashboard" }: LoggedInLayout
       {/* Main content */}
       <div className="pl-64">
         {/* Header */}
-        <header className="h-16 bg-card dark:bg-slate-800 border-b-4 border-primary shadow-lg flex items-center justify-between px-6 transition-colors duration-300">
-          <h2 className="font-heading text-2xl font-bold text-foreground">
+        <header className="h-16 bg-[#153275] border-b-4 border-primary shadow-lg flex items-center justify-between px-6">
+          <h2 className="font-heading text-2xl font-bold text-white">
             {title}
           </h2>
           
           <div className="flex items-center space-x-3">
-            <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="hover:bg-accent hover:text-accent-foreground transition-colors">
+                <Button variant="ghost" size="sm" className="text-white hover:bg-white hover:text-[#153275] transition-colors">
                   <Menu className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>

@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 // Query all active units of measure
 export const listUnits = query({
@@ -38,13 +39,13 @@ export const addUnit = mutation({
     type: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
 
     // Get current user
     const user = await ctx.db
       .query("users")
-      .withIndex("by_token", (q) => q.eq("tokenIdentifier", identity.tokenIdentifier))
+      .withIndex("by_auth_id", (q) => q.eq("authId", userId))
       .unique();
 
     if (!user) throw new Error("User not found");
@@ -72,8 +73,16 @@ export const updateUnit = mutation({
     isActive: v.boolean(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    // Get current user
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_auth_id", (q) => q.eq("authId", userId))
+      .unique();
+
+    if (!user) throw new Error("User not found");
 
     await ctx.db.patch(args.id, {
       name: args.name,
@@ -90,8 +99,16 @@ export const updateUnit = mutation({
 export const deleteUnit = mutation({
   args: { id: v.id("unitsOfMeasure") },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    // Get current user
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_auth_id", (q) => q.eq("authId", userId))
+      .unique();
+
+    if (!user) throw new Error("User not found");
 
     await ctx.db.delete(args.id);
   },
@@ -100,12 +117,12 @@ export const deleteUnit = mutation({
 // Initialize default units of measure
 export const initializeDefaultUnits = mutation({
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
 
     const user = await ctx.db
       .query("users")
-      .withIndex("by_token", (q) => q.eq("tokenIdentifier", identity.tokenIdentifier))
+      .withIndex("by_auth_id", (q) => q.eq("authId", userId))
       .unique();
 
     if (!user) throw new Error("User not found");

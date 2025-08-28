@@ -1,56 +1,38 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { ConvexAuthProvider } from "@convex-dev/auth/react";
+import { ConvexReactClient } from "convex/react";
+import { ReactNode } from "react";
+import { useAuthActions, useAuthToken } from "@convex-dev/auth/react";
 
-interface AuthContextType {
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: () => Promise<void>;
-  logout: () => void;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Check if user is already authenticated (e.g., from localStorage)
-    const authStatus = localStorage.getItem('isAuthenticated');
-    if (authStatus === 'true') {
-      setIsAuthenticated(true);
-    }
-    setIsLoading(false);
-  }, []);
-
-  const login = async () => {
-    // Simulate login process
-    setIsAuthenticated(true);
-    localStorage.setItem('isAuthenticated', 'true');
-  };
-
-  const logout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('isAuthenticated');
-  };
-
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
+    <ConvexAuthProvider client={convex}>
       {children}
-    </AuthContext.Provider>
+    </ConvexAuthProvider>
   );
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+// Re-export Convex auth hooks for easy use throughout the app
+export { useAuthActions } from "@convex-dev/auth/react";
+export { useAuthToken } from "@convex-dev/auth/react";
+
+// Custom hook to simulate useCurrentUser functionality
+export function useCurrentUser() {
+  const authToken = useAuthToken();
+  // Return the token if authenticated, null if not authenticated, undefined if loading
+  return authToken;
 }
 
-// Create a mock useConvexAuth hook for compatibility
 export function useConvexAuth() {
-  return useAuth();
-}
+  const { signIn, signOut } = useAuthActions();
+  const authToken = useAuthToken();
+  
+  return {
+    isAuthenticated: !!authToken,
+    isLoading: authToken === undefined,
+    login: signIn,
+    logout: signOut,
+  };

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { useConvexAuth } from "@/contexts/AuthContext";
+import { useAuthActions, useCurrentUser } from "@/contexts/AuthContext";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { toast } from "sonner";
@@ -15,12 +15,17 @@ import { toast } from "sonner";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   
-  const { isAuthenticated, isLoading: authLoading, login } = useConvexAuth();
+  const { signIn } = useAuthActions();
+  const currentUser = useCurrentUser();
   const storeUser = useMutation(api.users.store);
   const router = useRouter();
+  
+  const isAuthenticated = !!currentUser;
+  const authLoading = currentUser === undefined;
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -43,21 +48,24 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // For now, we'll simulate authentication
-      // In a real app, you'd integrate with Convex Auth or another auth provider
       if (isSignUp) {
-        // Simulate user creation
-        toast.success("Account created successfully! Please log in.");
-        setIsSignUp(false);
+        // Sign up new user - use signIn method with name parameter
+        await signIn("password", { email, password, name });
+        // After successful signup, store the user in our users table
+        await storeUser({ name, email });
+        toast.success("Account created successfully!");
+        router.push("/");
       } else {
-        // Simulate login
-        // In a real implementation, you'd validate credentials here
-        await login();
+        // Sign in existing user
+        await signIn("password", { email, password });
         toast.success("Logged in successfully!");
+        // Store user in our users table if not already there
+        await storeUser({ name: email.split('@')[0], email });
         router.push("/");
       }
-    } catch (error) {
-      toast.error(isSignUp ? "Failed to create account" : "Login failed");
+    } catch (error: any) {
+      console.error("Auth error:", error);
+      toast.error(error?.message || (isSignUp ? "Failed to create account" : "Login failed"));
     } finally {
       setIsLoading(false);
     }
@@ -86,6 +94,21 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {isSignUp && (
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-gray-700">Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  className="h-10"
+                  placeholder="Enter your full name"
+                />
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email" className="text-gray-700">Email</Label>
               <Input

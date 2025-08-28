@@ -43,9 +43,10 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, MoreHorizontal, Edit, Trash2, Eye, Camera, Upload, Package, Filter, BarChart3, FolderOpen, ArrowUpRight, DollarSign, Calculator, TrendingUp, Settings } from "lucide-react";
+import { Plus, MoreHorizontal, Edit, Trash2, Eye, Package, Filter, BarChart3, FolderOpen, ArrowUpRight, DollarSign, TrendingUp, Settings } from "lucide-react";
 import { toast } from "sonner";
 import { Id } from "../../../convex/_generated/dataModel";
+import ProductDialog from "@/components/inventory/ProductDialog";
 
 interface Product {
   _id: Id<"products">;
@@ -144,8 +145,6 @@ export default function InventoryPage() {
     notes: "" 
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const products = useQuery(api.products.listProducts);
@@ -161,12 +160,7 @@ export default function InventoryPage() {
   const pullInventory = useMutation(api.products.pullInventory);
   const returnInventory = useMutation(api.products.returnInventory);
   const receiveInventory = useMutation(api.products.receiveInventory);
-  const generateUploadUrl = useMutation(api.files.generateUploadUrl);
-  const saveFile = useMutation(api.files.saveFile);
   
-  // Admin mutations
-  const addCategory = useMutation(api.categories.addCategory);
-  const addUnit = useMutation(api.units.addUnit);
   
   // Get current user to check admin privileges
   const currentUser = useQuery(api.users.current);
@@ -183,85 +177,7 @@ export default function InventoryPage() {
   // Check if current user is admin
   const isAdmin = currentUser?.role === 'admin';
 
-  // Optimized form handlers to prevent re-renders
-  const handleFormChange = useCallback((field: keyof ProductFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  }, []);
 
-  const handleCategoryChange = useCallback((value: string) => {
-    setFormData(prev => ({ ...prev, category: value }));
-  }, []);
-
-  const handleUnitChange = useCallback((value: string) => {
-    setFormData(prev => ({ ...prev, unitOfMeasure: value }));
-  }, []);
-
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      sku: "",
-      category: "",
-      unitPrice: "",
-      quantity: "",
-      unitOfMeasure: "pcs",
-      materialType: "",
-      specifications: "",
-      description: "",
-      reorderLevel: "",
-      supplier: "",
-    });
-  };
-  
-  const resetAdminForms = () => {
-    setCategoryName("");
-    setCategoryDescription("");
-    setCategoryIcon("");
-    setUnitName("");
-    setUnitAbbreviation("");
-    setUnitType("");
-  };
-  
-  const handleAddCategory = async () => {
-    if (!categoryName.trim()) {
-      toast.error("Category name is required");
-      return;
-    }
-    
-    try {
-      await addCategory({
-        name: categoryName,
-        description: categoryDescription || undefined,
-        icon: categoryIcon || undefined,
-      });
-      
-      toast.success("Category added successfully!");
-      setIsAddCategoryDialogOpen(false);
-      resetAdminForms();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to add category");
-    }
-  };
-  
-  const handleAddUnit = async () => {
-    if (!unitName.trim() || !unitAbbreviation.trim() || !unitType.trim()) {
-      toast.error("All unit fields are required");
-      return;
-    }
-    
-    try {
-      await addUnit({
-        name: unitName,
-        abbreviation: unitAbbreviation,
-        type: unitType,
-      });
-      
-      toast.success("Unit added successfully!");
-      setIsAddUnitDialogOpen(false);
-      resetAdminForms();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to add unit");
-    }
-  };
 
   const handleBulkPull = async () => {
     if (selectedProducts.length === 0) {
@@ -360,25 +276,12 @@ export default function InventoryPage() {
   };
 
   const handleAddProduct = () => {
-    resetForm();
+    setSelectedProduct(null);
     setIsAddDialogOpen(true);
   };
 
   const handleEditProduct = (product: Product) => {
     setSelectedProduct(product);
-    setFormData({
-      name: product.name,
-      sku: product.sku,
-      category: product.category,
-      unitPrice: product.price.toString(),
-      quantity: product.quantity.toString(),
-      unitOfMeasure: product.unitOfMeasure || "pcs",
-      materialType: product.materialType || "",
-      specifications: product.specifications || "",
-      description: product.description || "",
-      reorderLevel: product.reorderLevel?.toString() || "",
-      supplier: product.supplier || "",
-    });
     setIsEditDialogOpen(true);
   };
 
@@ -417,112 +320,49 @@ export default function InventoryPage() {
     setIsReceiveDialogOpen(true);
   };
 
-  const handleImageUpload = async (file: File) => {
-    if (!file) return;
 
-    setIsUploading(true);
-    try {
-      // Generate upload URL
-      const uploadUrl = await generateUploadUrl();
-      
-      // Upload file
-      const result = await fetch(uploadUrl, {
-        method: "POST",
-        headers: { "Content-Type": file.type },
-        body: file,
-      });
-      
-      if (!result.ok) throw new Error("Upload failed");
-      
-      const { storageId } = await result.json();
-      
-      // Save file record
-      await saveFile({
-        storageId,
-        name: file.name,
-        type: file.type,
-        size: file.size,
-      });
-
-      toast.success("Image uploaded successfully!");
-    } catch (error) {
-      toast.error("Failed to upload image");
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleSubmit = async (isEdit: boolean = false) => {
-    if (!formData.name || !formData.sku || !formData.category || !formData.unitPrice || !formData.quantity) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
+  const handleProductSubmit = async (formData: ProductFormData, isEdit: boolean = false) => {
     const unitPrice = parseFloat(formData.unitPrice);
     const quantity = parseInt(formData.quantity);
     const reorderLevel = formData.reorderLevel ? parseInt(formData.reorderLevel) : undefined;
 
-    if (isNaN(unitPrice) || unitPrice < 0) {
-      toast.error("Please enter a valid unit price");
-      return;
+    if (isEdit && selectedProduct) {
+      await updateProduct({
+        id: selectedProduct._id,
+        name: formData.name,
+        sku: formData.sku,
+        category: formData.category,
+        price: unitPrice,
+        quantity,
+        description: formData.description || undefined,
+        costPrice: unitPrice, // Use unit price as cost price
+        reorderLevel,
+        supplier: formData.supplier || undefined,
+      });
+      toast.success("Product updated successfully!");
+      setIsEditDialogOpen(false);
+    } else {
+      await addProduct({
+        name: formData.name,
+        sku: formData.sku,
+        category: formData.category,
+        price: unitPrice,
+        quantity,
+        description: formData.description || undefined,
+        costPrice: unitPrice, // Use unit price as cost price
+        reorderLevel,
+        supplier: formData.supplier || undefined,
+        // Construction-specific fields
+        unitOfMeasure: formData.unitOfMeasure,
+        materialType: formData.materialType || undefined,
+        specifications: formData.specifications || undefined,
+        // MAUC initialization
+        initialCost: unitPrice, // Use unit price for MAUC initialization
+      });
+      toast.success("Product added successfully!");
+      setIsAddDialogOpen(false);
     }
-
-    if (isNaN(quantity) || quantity < 0) {
-      toast.error("Please enter a valid quantity");
-      return;
-    }
-
-    if (reorderLevel !== undefined && (isNaN(reorderLevel) || reorderLevel < 0)) {
-      toast.error("Please enter a valid reorder level");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      if (isEdit && selectedProduct) {
-        await updateProduct({
-          id: selectedProduct._id,
-          name: formData.name,
-          sku: formData.sku,
-          category: formData.category,
-          price: unitPrice,
-          quantity,
-          description: formData.description || undefined,
-          costPrice: unitPrice, // Use unit price as cost price
-          reorderLevel,
-          supplier: formData.supplier || undefined,
-        });
-        toast.success("Product updated successfully!");
-        setIsEditDialogOpen(false);
-      } else {
-        await addProduct({
-          name: formData.name,
-          sku: formData.sku,
-          category: formData.category,
-          price: unitPrice,
-          quantity,
-          description: formData.description || undefined,
-          costPrice: unitPrice, // Use unit price as cost price
-          reorderLevel,
-          supplier: formData.supplier || undefined,
-          // Construction-specific fields
-          unitOfMeasure: formData.unitOfMeasure,
-          materialType: formData.materialType || undefined,
-          specifications: formData.specifications || undefined,
-          // MAUC initialization
-          initialCost: unitPrice, // Use unit price for MAUC initialization
-        });
-        toast.success("Product added successfully!");
-        setIsAddDialogOpen(false);
-      }
-      resetForm();
-      setSelectedProduct(null);
-    } catch (error) {
-      toast.error(isEdit ? "Failed to update product" : "Failed to add product");
-    } finally {
-      setIsLoading(false);
-    }
+    setSelectedProduct(null);
   };
 
   const handleDelete = async () => {
@@ -667,269 +507,6 @@ export default function InventoryPage() {
     </div>
   );
 
-  const ProductDialog = ({ isOpen, onClose, isEdit = false }: { 
-    isOpen: boolean; 
-    onClose: () => void; 
-    isEdit?: boolean; 
-  }) => (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] bg-card border-border shadow-xl">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-foreground">
-            {isEdit ? "Edit Product" : "Add New Product"}
-          </DialogTitle>
-          <DialogDescription className="text-muted-foreground">
-            {isEdit ? "Update product information" : "Add a new product to your inventory"}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name" className="text-foreground">Product Name *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleFormChange('name', e.target.value)}
-                placeholder="Enter product name"
-                className="bg-background"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="sku" className="text-foreground">SKU *</Label>
-              <Input
-                id="sku"
-                value={formData.sku}
-                onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-                placeholder="Enter SKU"
-                className="bg-background"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="grid gap-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="category" className="text-foreground">Category *</Label>
-                {isAdmin && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsAddCategoryDialogOpen(true)}
-                    className="text-xs"
-                  >
-                    <Plus className="h-3 w-3 mr-1" />
-                    Add
-                  </Button>
-                )}
-              </div>
-              <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
-                <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {/* Custom categories from database */}
-                  {categories?.map((category) => (
-                    <SelectItem key={category._id} value={category.name}>
-                      {category.icon && <span className="mr-2">{category.icon}</span>}
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                  {/* Default fallback categories */}
-                  <SelectItem value="Steel">Steel</SelectItem>
-                  <SelectItem value="Concrete">Concrete</SelectItem>
-                  <SelectItem value="Lumber">Lumber</SelectItem>
-                  <SelectItem value="Electrical">Electrical</SelectItem>
-                  <SelectItem value="Plumbing">Plumbing</SelectItem>
-                  <SelectItem value="Drywall">Drywall</SelectItem>
-                  <SelectItem value="Roofing">Roofing</SelectItem>
-                  <SelectItem value="Insulation">Insulation</SelectItem>
-                  <SelectItem value="Hardware">Hardware</SelectItem>
-                  <SelectItem value="Tools">Tools</SelectItem>
-                  <SelectItem value="Safety">Safety</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="materialType" className="text-foreground">Material Type</Label>
-              <Input
-                id="materialType"
-                value={formData.materialType}
-                onChange={(e) => setFormData({ ...formData, materialType: e.target.value })}
-                placeholder="e.g., Rebar, PVC, 2x4"
-                className="bg-background"
-              />
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="unitOfMeasure" className="text-foreground">Unit of Measure *</Label>
-                {isAdmin && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsAddUnitDialogOpen(true)}
-                    className="text-xs"
-                  >
-                    <Plus className="h-3 w-3 mr-1" />
-                    Add
-                  </Button>
-                )}
-              </div>
-              <Select value={formData.unitOfMeasure} onValueChange={(value) => setFormData({ ...formData, unitOfMeasure: value })}>
-                <SelectTrigger className="bg-background">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {/* Custom units from database */}
-                  {units?.map((unit) => (
-                    <SelectItem key={unit._id} value={unit.abbreviation}>
-                      {unit.name} ({unit.abbreviation})
-                    </SelectItem>
-                  ))}
-                  {/* Default fallback units */}
-                  <SelectItem value="pcs">Pieces</SelectItem>
-                  <SelectItem value="tons">Tons</SelectItem>
-                  <SelectItem value="lbs">Pounds</SelectItem>
-                  <SelectItem value="kg">Kilograms</SelectItem>
-                  <SelectItem value="ft">Feet</SelectItem>
-                  <SelectItem value="m">Meters</SelectItem>
-                  <SelectItem value="m2">Square Meters</SelectItem>
-                  <SelectItem value="m3">Cubic Meters</SelectItem>
-                  <SelectItem value="sf">Square Feet</SelectItem>
-                  <SelectItem value="cf">Cubic Feet</SelectItem>
-                  <SelectItem value="gal">Gallons</SelectItem>
-                  <SelectItem value="L">Liters</SelectItem>
-                  <SelectItem value="rolls">Rolls</SelectItem>
-                  <SelectItem value="sheets">Sheets</SelectItem>
-                  <SelectItem value="bags">Bags</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="unitPrice" className="text-foreground">Unit Price *</Label>
-              <Input
-                id="unitPrice"
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData.unitPrice}
-                onChange={(e) => setFormData({ ...formData, unitPrice: e.target.value })}
-                placeholder="0.00"
-                className="bg-background"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="quantity" className="text-foreground">Quantity *</Label>
-              <Input
-                id="quantity"
-                type="number"
-                min="0"
-                value={formData.quantity}
-                onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                placeholder="0"
-                className="bg-background"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="reorderLevel" className="text-foreground">Reorder Level</Label>
-              <Input
-                id="reorderLevel"
-                type="number"
-                min="0"
-                value={formData.reorderLevel}
-                onChange={(e) => setFormData({ ...formData, reorderLevel: e.target.value })}
-                placeholder="10"
-                className="bg-background"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="specifications" className="text-foreground">Specifications</Label>
-              <Input
-                id="specifications"
-                value={formData.specifications}
-                onChange={(e) => setFormData({ ...formData, specifications: e.target.value })}
-                placeholder="Grade, size, etc."
-                className="bg-background"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="supplier" className="text-foreground">Supplier</Label>
-              <Input
-                id="supplier"
-                value={formData.supplier}
-                onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
-                placeholder="Supplier name"
-                className="bg-background"
-              />
-            </div>
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="description" className="text-foreground">Description</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Enter product description"
-              className="bg-background"
-              rows={3}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label className="text-foreground">Product Image</Label>
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
-                className="flex items-center gap-2"
-              >
-                <Camera className="h-4 w-4" />
-                {isUploading ? "Uploading..." : "Take Photo"}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
-                className="flex items-center gap-2"
-              >
-                <Upload className="h-4 w-4" />
-                {isUploading ? "Uploading..." : "Upload Image"}
-              </Button>
-            </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleImageUpload(file);
-              }}
-              className="hidden"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button 
-            onClick={() => handleSubmit(isEdit)} 
-            disabled={isLoading}
-          >
-            {isLoading ? "Saving..." : (isEdit ? "Update Product" : "Add Product")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
 
   return (
     <LoggedInLayout title="Inventory Management">
@@ -1128,7 +705,7 @@ export default function InventoryPage() {
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-2xl backdrop-blur-sm min-w-48">
+                          <DropdownMenuContent align="end" className="bg-popover border-border shadow-2xl backdrop-blur-sm min-w-48">
                             <DropdownMenuItem 
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -1302,6 +879,9 @@ export default function InventoryPage() {
         <ProductDialog
           isOpen={isAddDialogOpen}
           onClose={() => setIsAddDialogOpen(false)}
+          isEdit={false}
+          product={null}
+          onSubmit={handleProductSubmit}
         />
 
         {/* Edit Product Dialog */}
@@ -1309,6 +889,8 @@ export default function InventoryPage() {
           isOpen={isEditDialogOpen}
           onClose={() => setIsEditDialogOpen(false)}
           isEdit={true}
+          product={selectedProduct}
+          onSubmit={handleProductSubmit}
         />
 
         {/* Delete Confirmation Dialog */}
@@ -1358,12 +940,12 @@ export default function InventoryPage() {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="pullProject">Project (Optional)</Label>
-                <Select value={pullData.projectId} onValueChange={(value) => setPullData({ ...pullData, projectId: value })}>
+                <Select value={pullData.projectId || "no-project"} onValueChange={(value) => setPullData({ ...pullData, projectId: value === "no-project" ? "" : value })}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select project" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No Project</SelectItem>
+                    <SelectItem value="no-project">No Project</SelectItem>
                     {projects?.map((project) => (
                       <SelectItem key={project._id} value={project._id}>
                         {project.name}
@@ -1417,12 +999,12 @@ export default function InventoryPage() {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="returnProject">Project (Optional)</Label>
-                <Select value={returnData.projectId} onValueChange={(value) => setReturnData({ ...returnData, projectId: value })}>
+                <Select value={returnData.projectId || "no-project"} onValueChange={(value) => setReturnData({ ...returnData, projectId: value === "no-project" ? "" : value })}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select project" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No Project</SelectItem>
+                    <SelectItem value="no-project">No Project</SelectItem>
                     {projects?.map((project) => (
                       <SelectItem key={project._id} value={project._id}>
                         {project.name}
@@ -1629,10 +1211,10 @@ export default function InventoryPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => { setIsAddCategoryDialogOpen(false); resetAdminForms(); }}>
+              <Button variant="outline" onClick={() => setIsAddCategoryDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleAddCategory}>
+              <Button onClick={() => toast.info("Please use the ProductDialog to add categories")}>
                 Add Category
               </Button>
             </DialogFooter>
@@ -1684,10 +1266,10 @@ export default function InventoryPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => { setIsAddUnitDialogOpen(false); resetAdminForms(); }}>
+              <Button variant="outline" onClick={() => setIsAddUnitDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleAddUnit}>
+              <Button onClick={() => toast.info("Please use the ProductDialog to add units")}>
                 Add Unit
               </Button>
             </DialogFooter>
@@ -1707,12 +1289,12 @@ export default function InventoryPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="bulkProject">Project (Optional)</Label>
-                  <Select value={bulkProjectId} onValueChange={setBulkProjectId}>
+                  <Select value={bulkProjectId || "no-project"} onValueChange={(value) => setBulkProjectId(value === "no-project" ? "" : value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select project" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">No Project</SelectItem>
+                      <SelectItem value="no-project">No Project</SelectItem>
                       {projects?.map((project) => (
                         <SelectItem key={project._id} value={project._id}>
                           {project.name}
@@ -1785,12 +1367,12 @@ export default function InventoryPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="bulkReturnProject">Project (Optional)</Label>
-                  <Select value={bulkProjectId} onValueChange={setBulkProjectId}>
+                  <Select value={bulkProjectId || "no-project"} onValueChange={(value) => setBulkProjectId(value === "no-project" ? "" : value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select project" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">No Project</SelectItem>
+                      <SelectItem value="no-project">No Project</SelectItem>
                       {projects?.map((project) => (
                         <SelectItem key={project._id} value={project._id}>
                           {project.name}
@@ -1863,9 +1445,9 @@ function ProductDetailsDialog({ isOpen, onClose, product }: {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-2xl">
+        <DialogContent className="sm:max-w-md bg-card border-border shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-slate-900 dark:text-slate-100 text-xl font-bold">{product.name}</DialogTitle>
+            <DialogTitle className="text-foreground text-xl font-bold">{product.name}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             {product.imageUrl && (
@@ -1954,10 +1536,10 @@ function VendorsList({ productId }: { productId: Id<"products"> }) {
   return (
     <ul className="space-y-2">
       {vendors.map((vendor) => (
-        <li key={vendor?._id} className="flex justify-between items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+        <li key={vendor?._id} className="flex justify-between items-center p-3 border border-border rounded-lg bg-muted/50 hover:bg-muted transition-colors">
           <div>
-            <p className="font-medium text-slate-900 dark:text-slate-100">{vendor?.name}</p>
-            <p className="text-sm text-slate-600 dark:text-slate-400">{vendor?.email}</p>
+            <p className="font-medium text-foreground">{vendor?.name}</p>
+            <p className="text-sm text-muted-foreground">{vendor?.email}</p>
           </div>
           <p className="text-sm font-semibold text-green-600 dark:text-green-400">${vendor?.price?.toFixed(2)}</p>
         </li>
@@ -1990,9 +1572,9 @@ function PurchaseDialog({ isOpen, onClose, product }: {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-2xl">
+        <DialogContent className="bg-card border-border shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="text-slate-900 dark:text-slate-100 text-lg font-bold">Request Purchase for {product.name}</DialogTitle>
+          <DialogTitle className="text-foreground text-lg font-bold">Request Purchase for {product.name}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <Label htmlFor="quantity">Quantity</Label>

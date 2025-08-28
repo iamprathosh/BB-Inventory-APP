@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { User, Shield, Settings, Plus, Trash2, Package, Ruler } from "lucide-react";
+import { User, Shield, Settings, Plus, Trash2, Package, Ruler, Database, Download, AlertTriangle } from "lucide-react";
 import { Id } from "../../../convex/_generated/dataModel";
 
 export default function AdminSetupPage() {
@@ -48,6 +48,8 @@ export default function AdminSetupPage() {
   const deleteCategory = useMutation(api.categories.deleteCategory);
   const addUnit = useMutation(api.units.addUnit);
   const deleteUnit = useMutation(api.units.deleteUnit);
+  const clearAllSampleData = useMutation(api.admin.clearAllSampleData);
+  const importBBInventoryMasterList = useMutation(api.admin.importBBInventoryMasterList);
   
   // Check if there are any existing admins
   const existingAdmins = users?.filter(user => user.role === 'admin') || [];
@@ -218,7 +220,7 @@ export default function AdminSetupPage() {
                         </SelectItem>
                       ))
                     ) : (
-                      <SelectItem value="" disabled>
+                      <SelectItem value="no-users" disabled>
                         {users === undefined ? "Loading users..." : "No users found"}
                       </SelectItem>
                     )}
@@ -372,7 +374,7 @@ export default function AdminSetupPage() {
         </Card>
         
         {/* Unit Management */}
-        <Card>
+        <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Ruler className="h-5 w-5" />
@@ -423,6 +425,88 @@ export default function AdminSetupPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Data Management */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              Data Management
+            </CardTitle>
+            <CardDescription>
+              Manage sample data and import B&B inventory master list
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Clear Sample Data */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-orange-600">
+                  <AlertTriangle className="h-5 w-5" />
+                  <h3 className="font-medium">Clear Sample Data</h3>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Remove all sample data from the database including products, categories, units, and inventory transactions. User accounts will be preserved.
+                </p>
+                <Button 
+                  variant="destructive"
+                  onClick={async () => {
+                    try {
+                      await clearAllSampleData();
+                      toast.success("All sample data has been cleared successfully!");
+                    } catch (error: any) {
+                      toast.error(error.message || "Failed to clear sample data");
+                    }
+                  }}
+                  className="w-full flex items-center gap-2"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Clear All Sample Data
+                </Button>
+              </div>
+
+              {/* Import B&B Data */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-blue-600">
+                  <Download className="h-5 w-5" />
+                  <h3 className="font-medium">Import B&B Inventory</h3>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Import the BuildBuddy inventory master list with categories, units, and sample products. This will set up your system with B&B's inventory structure.
+                </p>
+                <Button 
+                  onClick={async () => {
+                    try {
+                      await importBBInventoryMasterList();
+                      toast.success("B&B Inventory Master List imported successfully!");
+                    } catch (error: any) {
+                      toast.error(error.message || "Failed to import B&B inventory");
+                    }
+                  }}
+                  className="w-full flex items-center gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  Import B&B Inventory Master List
+                </Button>
+              </div>
+            </div>
+
+            <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                <div className="text-sm">
+                  <p className="font-medium text-yellow-800 mb-1">Important Notes:</p>
+                  <ul className="text-yellow-700 space-y-1">
+                    <li>• Clear sample data before importing B&B inventory for best results</li>
+                    <li>• These operations cannot be undone - make sure you have backups if needed</li>
+                    <li>• You must be logged in as an authenticated user to perform these operations</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        </div>
       </div>
       
       {/* Add Category Dialog */}
@@ -593,9 +677,7 @@ export default function AdminSetupPage() {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-        </AlertDialog>
-        </div>
-      </div>
+      </AlertDialog>
     </LoggedInLayout>
   );
 }

@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { mutation, query, internalMutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { Doc, Id } from "./_generated/dataModel";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 /**
  * MAUC (Moving Average Unit Cost) Calculation Logic
@@ -131,14 +132,14 @@ export const receiveInventory = mutation({
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args): Promise<Id<"inventoryTransactions">> => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
       throw new Error("Not authenticated");
     }
 
     const user = await ctx.db
       .query("users")
-      .withIndex("by_token", (q) => q.eq("tokenIdentifier", identity.tokenIdentifier))
+      .withIndex("by_auth_id", (q) => q.eq("authId", userId))
       .unique();
 
     if (!user) {

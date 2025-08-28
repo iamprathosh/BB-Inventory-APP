@@ -3,11 +3,12 @@ import { v } from "convex/values";
 
 export default defineSchema({
   users: defineTable({
+    authId: v.string(), // Reference to Convex Auth user ID
     name: v.string(),
-    tokenIdentifier: v.string(),
+    email: v.string(),
     role: v.optional(v.string()), // "worker", "supervisor", "admin"
     isActive: v.optional(v.boolean()),
-  }).index("by_token", ["tokenIdentifier"]).index("by_role", ["role"]),
+  }).index("by_auth_id", ["authId"]).index("by_role", ["role"]),
 
   products: defineTable({
     name: v.string(),
